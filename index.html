@@ -33,7 +33,7 @@
 </head>
 <body>
 <div id="vizContainer"></div>
-
+ 
 <script>
     let viz; // global reference
     const tableauServerUrl = "https://etxapipoc.elm.sa"; // Define your Tableau server URL here
@@ -96,6 +96,7 @@
             }
         }
     }
+    console.log("tableau =", typeof tableau);
 
     // You might also try to catch the network request directly in JavaScript
     // This is more advanced and might require overriding XMLHttpRequest or fetch API.
