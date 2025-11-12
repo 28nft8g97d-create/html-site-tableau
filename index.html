@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tableau Report</title>
+    <script src="https://public.tableau.com/javascripts/api/tableau-2.min.js"></script>
+    <style>
+        html, body {
+          margin: 0;
+          padding: 0;
+          height: 100%;
+          width: 100%;
+          overflow: hidden;
+          background: #fff;
+        }
+
+        #vizContainer {
+          position: fixed;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: stretch;
+          justify-content: stretch;
+        }
+
+        iframe {
+          width: 100% !important;
+          height: 100% !important;
+          border: none !important;
+        }
+    </style>
+</head>
+<body>
+<div id="vizContainer"></div>
+
+<script>
+    let viz; // global reference
+    const tableauServerUrl = "https://etxapipoc.elm.sa"; // Define your Tableau server URL here
+
+    function loadTableauViz(ticket) {
+      const containerDiv = document.getElementById("vizContainer");
+      // Use the full URL for the viz
+      const vizUrl = `${ticket}`;
+
+      const options = {
+        hideTabs: true,
+        width: "100%",
+        height: "100%", // Use 100% for full height
+          onFirstInteractive: (event: any) => {
+             this.tableauViz = event.viz;
+            // This callback fires when the viz is ready for interaction.
+            // You can potentially trigger a log to Flutter here.
+            if (window.flutter_inappwebview) {
+                window.flutter_inappwebview.callHandler('vizReady', 'Viz has loaded and is interactive.');
+            }
+    },
+      };
+
+      if (viz) {
+        viz.dispose(); // Dispose previous viz if it exists
+      }
+      viz = new tableau.Viz(containerDiv, vizUrl, options);
+    }
+
+    function exportToPDF() {
+        if (viz) {
+            // This opens the Tableau export dialog in a new window/tab or in an overlay.
+            // The actual PDF download URL might be from this dialog.
+            viz.showExportPDFDialog();
+
+            // Alternative: Directly export as PDF without the dialog (if supported by your Tableau version/configuration)
+            // This might generate a direct download more reliably,
+            // but might lack customization options for the user.
+            // viz.exportPDF();
+        } else {
+            console.error("Viz not loaded yet.");
+            if (window.flutter_inappwebview) {
+                window.flutter_inappwebview.callHandler('exportError', 'Viz not loaded for PDF export.');
+            }
+        }
+    }
+    function exportImage() {
+        if (viz) {
+            // This opens the Tableau export dialog in a new window/tab or in an overlay.
+            // The actual PDF download URL might be from this dialog.
+            viz.showExportImageDialog();
+
+            // Alternative: Directly export as PDF without the dialog (if supported by your Tableau version/configuration)
+            // This might generate a direct download more reliably,
+            // but might lack customization options for the user.
+            // viz.exportPDF();
+        } else {
+            console.error("Viz not loaded yet.");
+            if (window.flutter_inappwebview) {
+                window.flutter_inappwebview.callHandler('exportError', 'Viz not loaded for PDF export.');
+            }
+        }
+    }
+
+    // You might also try to catch the network request directly in JavaScript
+    // This is more advanced and might require overriding XMLHttpRequest or fetch API.
+    // For now, rely on Flutter's onDownloadStartRequest.
+
+</script>
+</body>
+</html>
