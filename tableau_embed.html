@@ -47,14 +47,13 @@
         hideTabs: true,
         width: "100%",
         height: "100%", // Use 100% for full height
-          onFirstInteractive: (event: any) => {
-             this.tableauViz = event.viz;
+        onFirstInteractive: function() {
             // This callback fires when the viz is ready for interaction.
             // You can potentially trigger a log to Flutter here.
             if (window.flutter_inappwebview) {
                 window.flutter_inappwebview.callHandler('vizReady', 'Viz has loaded and is interactive.');
             }
-    },
+        }
       };
 
       if (viz) {
